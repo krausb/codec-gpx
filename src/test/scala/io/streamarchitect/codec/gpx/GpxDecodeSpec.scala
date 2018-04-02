@@ -35,8 +35,7 @@ class GpxDecodeSpec extends WordSpecLike with MustMatchers {
 
     "successful be parsed from a GPX file and mapped to a scala object hierarchy" in {
 
-      val gpxType =
-        scalaxb.fromXML[GpxType](XML.loadString(loadXmlStringFromResource))
+      scalaxb.fromXML[GpxType](XML.loadString(GpxDecodeSpec.loadXmlStringFromResource))
 
     }
 
@@ -46,7 +45,7 @@ class GpxDecodeSpec extends WordSpecLike with MustMatchers {
 
     "successful decode a GPX XML file and return the filecontent as a GpxType object tree" in {
 
-      val gpxType = GpxCodec.decode(Source.fromResource("test_trace.gpx").mkString)
+      GpxCodec.decode(GpxDecodeSpec.loadXmlStringFromResource)
 
     }
 
@@ -56,14 +55,26 @@ class GpxDecodeSpec extends WordSpecLike with MustMatchers {
 
     "successful be encoded as a XML string" in {
 
-      val xmlString = loadXmlStringFromResource
+      val xmlString   = GpxDecodeSpec.loadXmlStringFromResource
       val gpxTypeElem = scalaxb.fromXML[GpxType](XML.loadString(xmlString))
-      val gpxTypeXmlString = GpxCodec.encode(gpxTypeElem)
+      GpxCodec.encode(gpxTypeElem)
 
     }
 
   }
 
-  private def loadXmlStringFromResource(): String = Source.fromResource("test_trace.gpx").mkString
+}
+
+object GpxDecodeSpec {
+
+  private val log = LogManager.getLogger(this.getClass)
+
+  private def loadXmlStringFromResource(): String =
+    Source
+      .fromInputStream(
+        getClass.getResourceAsStream("/test_trace.gpx")
+      )
+      .getLines()
+      .mkString
 
 }

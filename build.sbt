@@ -68,7 +68,7 @@ lazy val settings =
 lazy val commonSettings =
   Seq(
     // scalaVersion from .travis.yml via sbt-travisci
-    // scalaVersion := "2.12.4",
+    scalaVersion := "2.11.12",
     organization := "io.streamarchitect",
     organizationName := "Bastian Kraus",
     startYear := Some(2018),
@@ -84,7 +84,6 @@ lazy val commonSettings =
     ),
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-    testFrameworks += new TestFramework("utest.runner.Framework"),
     credentials += credentialsProvider()
 )
 
@@ -99,9 +98,6 @@ lazy val scalaXmlSettings =
     scalaxbPackageName in (Compile, scalaxb)     := "io.streamarchitect.platform.model",
     resolvers += Resolver.sonatypeRepo("public")
   )
-
-// -----------------------------------------------------------------------------
-// publish settings
 
 val nexusHttpMethod     = Option(System.getenv("NEXUS_HTTP_METHOD")).getOrElse("http")
 val nexusUrl            = Option(System.getenv("NEXUS_URL")).getOrElse("nexus.streamarchitect.io")
@@ -139,4 +135,53 @@ lazy val publishSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
   publishTo := Some(publishRepository)
+)
+
+// -----------------------------------------------------------------------------
+// release settings
+
+import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleaseStateTransformations._
+
+val nextVersion = "0.1.2"
+
+releaseNextVersion := { ver =>
+  import sbtrelease._
+
+  println(s"Release Version: ${ver} - Preset next Version: ${nextVersion}")
+
+  if (nextVersion > ver) {
+    nextVersion
+  } else {
+    println(
+      "nextVersion has not been defined, or been too low compared to current version, therefore it's bumped to next BugFix version"
+    )
+    Version(ver).map(_.bumpBugfix.asSnapshot.string).getOrElse(versionFormatError)
+  }
+}
+
+def releaseStepsProvider(): Seq[ReleaseStep] = {
+  ConsoleOut.systemOut.println(s"is snapshot: ${isSnapshot()}")
+  if (isSnapshot) {
+    Seq[ReleaseStep](
+      inquireVersions,
+      publishArtifacts
+    )
+  } else {
+    Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      publishArtifacts,
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
+  }
+}
+
+lazy val releaseSettings = Seq(
+  releaseProcess := releaseStepsProvider()
 )
