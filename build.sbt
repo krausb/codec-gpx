@@ -63,7 +63,8 @@ lazy val settings =
   commonSettings ++
   publishSettings ++
   scalafmtSettings ++
-  scalaXmlSettings
+  scalaXmlSettings ++
+  wartRemoverSettings
 
 lazy val commonSettings =
   Seq(
@@ -85,7 +86,6 @@ lazy val commonSettings =
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
     testFrameworks += new TestFramework("utest.runner.Framework"),
-    wartremoverWarnings in (Compile, compile) ++= Warts.unsafe,
     credentials += credentialsProvider()
 )
 
@@ -100,6 +100,13 @@ lazy val scalaXmlSettings =
     scalaxbPackageName in (Compile, scalaxb)     := "io.streamarchitect.platform.model",
     resolvers += Resolver.sonatypeRepo("public")
   )
+
+lazy val wartRemoverSettings = Seq(
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
+    .filter(e => e != Wart.Any && e != Wart.Throw && e != Wart.Product && e != Wart.Serializable),
+  wartremoverExcluded ++= sourceManaged.value.**("*.scala").get,
+  wartremoverExcluded += baseDirectory.value / "target"
+)
 
 // -----------------------------------------------------------------------------
 // publish settings

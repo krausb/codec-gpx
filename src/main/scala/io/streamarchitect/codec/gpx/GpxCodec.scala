@@ -24,12 +24,18 @@ import scala.xml.XML
 /**
   * Codec for GPX XML
   */
-object GpxDecoder {
+object GpxCodec {
 
   /**
     * GpxType to XML Encoder
     */
-  def encode(gpxPayload: GpxType): String = scalaxb.toXML[GpxType](gpxPayload)
+  def encode(gpxPayload: GpxType): String =
+    scalaxb.toXML[GpxType](
+      gpxPayload,
+      None,
+      Some("gpx"),
+      io.streamarchitect.platform.model.defaultScope
+    ).toString()
 
   /**
     * XML to GpxType Decoder
@@ -37,6 +43,9 @@ object GpxDecoder {
     * @param xmlPayload
     * @return [[GpxType]]
     */
-  def decode(xmlPayload: String): GpxType = scalaxb.fromXML[GpxType](XML.loadString(xmlPayload))
+  def decode(xmlPayload: String): GpxType =
+    scalaxb.fromXML[GpxType](
+      XML.loadString(xmlPayload)
+    )
 
 }

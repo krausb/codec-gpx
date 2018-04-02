@@ -1,0 +1,8 @@
+<Loggers>
+
+    <Root level="info" includeLocation="true">
+        <AppenderRef ref="RollingRandomAccessFile"/>
+        <AppenderRef ref="Stdout"/>
+    </Root>
+
+</Loggers>
