@@ -21,5 +21,17 @@ pipeline {
         sh "${tool name: 'sbt', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt test"
       }
     }
+    stage('Publish') {
+      when {
+        branch 'master'
+      }
+      steps {
+        echo 'Publish'
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'streamarchitect-nexus',
+                    usernameVariable: 'NEXUS_USERNAME_VARIABLE', passwordVariable: 'NEXUS_PASSWORD_VARIABLE']]) {
+          sh 'sbt publish'
+        }
+      }
+    }
   }
 }
