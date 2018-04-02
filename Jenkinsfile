@@ -28,8 +28,8 @@ pipeline {
       steps {
         echo 'Publish'
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'streamarchitect-nexus',
-                    usernameVariable: 'NEXUS_USERNAME_VARIABLE', passwordVariable: 'NEXUS_PASSWORD_VARIABLE']]) {
-          sh 'sbt publish'
+            usernameVariable: 'NEXUS_USERNAME_VARIABLE', passwordVariable: 'NEXUS_PASSWORD_VARIABLE']]) {
+          sh "${tool name: 'sbt', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt publish"
         }
       }
     }
