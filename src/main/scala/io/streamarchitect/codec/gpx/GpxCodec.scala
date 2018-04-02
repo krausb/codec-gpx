@@ -30,12 +30,14 @@ object GpxCodec {
     * GpxType to XML Encoder
     */
   def encode(gpxPayload: GpxType): String =
-    scalaxb.toXML[GpxType](
-      gpxPayload,
-      None,
-      Some("gpx"),
-      io.streamarchitect.platform.model.defaultScope
-    ).toString()
+    scalaxb
+      .toXML[GpxType](
+        gpxPayload,
+        None,
+        Some("gpx"),
+        io.streamarchitect.platform.model.defaultScope
+      )
+      .toString()
 
   /**
     * XML to GpxType Decoder
