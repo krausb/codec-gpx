@@ -134,7 +134,8 @@ lazy val publishSettings = Seq(
   ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  publishTo := Some(publishRepository)
+  publishTo := Some(publishRepository),
+  updateOptions := updateOptions.value.withGigahorse(false)
 )
 
 // -----------------------------------------------------------------------------
