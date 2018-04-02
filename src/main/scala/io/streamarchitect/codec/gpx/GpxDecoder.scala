@@ -15,12 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.streamarchitect.codec
+package io.streamarchitect.codec.gpx
 
-package object gpx {
+import io.streamarchitect.platform.model.GpxType
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+import scala.xml.XML
+
+/**
+  * Codec for GPX XML
+  */
+object GpxDecoder {
+
+  /**
+    * GpxType to XML Encoder
+    */
+  def encode(gpxPayload: GpxType): String = scalaxb.toXML[GpxType](gpxPayload)
+
+  /**
+    * XML to GpxType Decoder
+    *
+    * @param xmlPayload
+    * @return [[GpxType]]
+    */
+  def decode(xmlPayload: String): GpxType = scalaxb.fromXML[GpxType](XML.loadString(xmlPayload))
+
 }

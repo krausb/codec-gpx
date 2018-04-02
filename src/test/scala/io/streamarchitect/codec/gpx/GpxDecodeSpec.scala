@@ -15,12 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.streamarchitect.codec
+package io.streamarchitect.codec.gpx
 
-package object gpx {
+import io.streamarchitect.platform.model.GpxType
+import org.apache.logging.log4j.LogManager
+import org.scalatest.{ MustMatchers, WordSpecLike }
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+import scala.io.Source
+import scala.xml.XML
+
+/**
+  * Test spec to verify that the decoding of GPX files is working.
+  */
+class GpxDecodeSpec extends WordSpecLike with MustMatchers {
+
+  private val log = LogManager.getLogger(this.getClass)
+
+  "A GPX Decoder" should {
+
+    "successful parse a GPX file and map it to a scala object hierarchy" in {
+
+      val gpxFile =
+        scalaxb.fromXML[GpxType](XML.loadString(Source.fromResource("test_trace.gpx").mkString))
+
+    }
+  }
+
 }

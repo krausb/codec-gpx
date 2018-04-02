@@ -2,6 +2,8 @@
 
 Welcome to codec-gpx!
 
+This is a library providing a object-based codec to encode and decode GPX XML.
+
 ## Contribution policy ##
 
 Contributions via GitHub pull requests are gladly accepted from their original author. Along with
