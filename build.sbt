@@ -62,6 +62,7 @@ lazy val library =
 lazy val settings =
   commonSettings ++
   publishSettings ++
+  releaseSettings ++
   scalafmtSettings ++
   scalaXmlSettings
 
